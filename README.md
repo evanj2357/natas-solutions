@@ -4,10 +4,9 @@ Python 3 solution scripts for [Natas](https://overthewire.org/wargames/natas/) l
 
 ## SPOILER WARNING
 
-This repository contains solutions to the [Natas](https://overthewire.org/wargames/natas/)
-"wargame". Specifically, all numbered scripts are working solutions to the corresponding
-Natas levels. Other files in the public repository may be helpful, but won't give away
-solutions.
+The numbered scripts contain working solutions to the corresponding levels in the
+[Natas](https://overthewire.org/wargames/natas/) "wargame". Other files may be helpful,
+but won't give away solutions.
 
 ## Using the utilities
 
@@ -17,3 +16,6 @@ My solution scripts usually import all of its contents with `from natas_utils im
 Utility functions for loading and storing level data depend on a `levels.json` file in the
 working directory. To use those functions starting from Natas0, rename or copy `_levels_init.json`
 to `levels.json`.
+
+`recon.py` is my utility for fetching and printing pages for the various levels from the
+command line. It takes a level number and optional relative path as command line arguments.
