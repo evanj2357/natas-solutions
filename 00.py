@@ -1,4 +1,8 @@
 import json
+"""
+natas0: just the entry point, flag displays on the page
+"""
+
 from natas_utils.natas_utils import load_level
 import requests
 from bs4 import BeautifulSoup

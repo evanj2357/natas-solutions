@@ -1,3 +1,7 @@
+"""
+natas3: leaky robots.txt
+"""
+
 import re
 import requests
 from bs4 import BeautifulSoup

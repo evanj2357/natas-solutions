@@ -1,3 +1,7 @@
+"""
+natas2: request a directory to see its contents
+"""
+
 import json
 import re
 import requests

@@ -1,3 +1,7 @@
+"""
+natas7: URL parameters, path traversal
+"""
+
 import requests
 from natas_utils import *
 

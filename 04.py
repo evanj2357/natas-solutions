@@ -1,3 +1,7 @@
+"""
+natas4: HTTP referer header, lying to the server
+"""
+
 import re
 import requests
 from bs4 import BeautifulSoup

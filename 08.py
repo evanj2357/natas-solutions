@@ -1,3 +1,7 @@
+"""
+natas8: encoding is not encryption, source leaks a secret
+"""
+
 import base64
 import re
 import requests

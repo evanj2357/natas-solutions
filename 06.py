@@ -1,3 +1,7 @@
+"""
+natas6: POST requests, server source leaks a secret
+"""
+
 import re
 import requests
 from natas_utils import *

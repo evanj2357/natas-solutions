@@ -1,3 +1,7 @@
+"""
+natas1: view source, check comments
+"""
+
 import json
 import requests
 from bs4 import BeautifulSoup
