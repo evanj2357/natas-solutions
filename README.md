@@ -8,6 +8,21 @@ The numbered scripts contain working solutions to the corresponding levels in th
 [Natas](https://overthewire.org/wargames/natas/) "wargame". Other files may be helpful,
 but won't give away solutions.
 
+## Hints
+
+Each solution script has a brief level description in a doc comment. Python's `help`
+function will print these for you if you need a hint. For example, to print generated
+documentation for natas2, you could run the command:
+```
+python -c "help('.02')"
+```
+
+For some levels, this will also reveal documentation for any helper functions in the
+solution script. If you have already solved the level, the password will be printed, too.
+
+_Note: At the moment, this requires a well-formed `levels.json` file. Copy `_levels_init.json`_
+_to `levels.json` file if needed._
+
 ## Using the utilities
 
 The `natas_utils` module provides some utility functions I find helpful on various levels.
