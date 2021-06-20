@@ -7,7 +7,7 @@ from natas_utils import *
 LEVEL = 5
 URL, LOGIN = load_level(LEVEL)
 
-if __name__ == "__main__":
+def main():
     with requests.session() as session:
         # _ = session.get(URL, auth=LOGIN)
 
@@ -28,3 +28,6 @@ if __name__ == "__main__":
             store_level_password(LEVEL + 1, natas6_password)
         else:
             exit("Failed to get password for the next level.")
+
+if __name__ == "__main__":
+    main()

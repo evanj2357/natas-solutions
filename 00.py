@@ -1,19 +1,15 @@
 import json
+from natas_utils.natas_utils import load_level
 import requests
 from bs4 import BeautifulSoup
 
-with open("levels.json", "r") as datafile:
-    NATAS_DATA = json.load(datafile)
+from natas_utils import *
 
 LEVEL = 0
-LEVEL_URL = NATAS_DATA["level_url_format"].replace("{LEVEL}", f"natas{LEVEL}")
-LOGIN = NATAS_DATA["logins"][LEVEL]
+URL, LOGIN = load_level(LEVEL)
 
-if __name__ == "__main__":
-    print(LEVEL_URL)
-    print(LOGIN)
-
-    response = requests.get(LEVEL_URL, auth=(LOGIN["username"], LOGIN["password"]))
+def main():
+    response = requests.get(URL, auth=LOGIN)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -25,4 +21,7 @@ if __name__ == "__main__":
     natas1_password = content.contents[1].strip().split()[-1]
     print("natas1:", natas1_password)
 
-    store_level_password(LEVEL + 1, natas2_password)
+    store_level_password(LEVEL + 1, natas1_password)
+
+if __name__ == "__main__":
+    main()

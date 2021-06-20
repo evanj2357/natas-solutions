@@ -15,7 +15,7 @@ def decode_secret(encoded_secret: str) -> str:
     unreversed = data[-1::-1]
     return str(base64.b64decode(unreversed), "utf8")
 
-if __name__ == "__main__":
+def main():
     # an encoded secret is stored in the source leaked at /index-source.html
     source_response = requests.get(URL + "/index-source.html", auth=LOGIN)
 
@@ -32,3 +32,6 @@ if __name__ == "__main__":
         store_level_password(LEVEL + 1, natas9_password)
     else:
         exit("Failed to get password for the next level.")
+
+if __name__ == "__main__":
+    main()

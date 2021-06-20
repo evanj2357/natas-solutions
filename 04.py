@@ -6,10 +6,7 @@ from natas_utils import *
 LEVEL = 4
 LEVEL_URL, LOGIN = load_level(LEVEL)
 
-if __name__ == "__main__":
-    print(LEVEL_URL)
-    print(LOGIN)
-
+def main():
     # recon indicates that 'authorized users should come only from "http://natas5.natas.labs.overthewire.org/"'
     # solution: set custom referer header
 
@@ -27,3 +24,6 @@ if __name__ == "__main__":
     if natas5_password:
         print("natas5:", natas5_password)
         store_level_password(LEVEL + 1, natas5_password)
+
+if __name__ == "__main__":
+    main()

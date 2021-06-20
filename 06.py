@@ -5,7 +5,7 @@ from natas_utils import *
 LEVEL = 6
 URL, LOGIN = load_level(LEVEL)
 
-if __name__ == "__main__":
+def main():
     # main challenge page has a link to view source code at /index-source.html
     #
     # server will check a secret sent in a POST request against the server's secret,
@@ -28,3 +28,6 @@ if __name__ == "__main__":
         store_level_password(LEVEL + 1, natas7_password)
     else:
         exit("Failed to get password for the next level.")
+
+if __name__ == "__main__":
+    main()

