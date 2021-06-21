@@ -2,18 +2,17 @@
 natas2: request a directory to see its contents
 """
 
-import json
 import re
 import requests
 from bs4 import BeautifulSoup
+from typing import Optional
 
 from natas_utils import *
 
 LEVEL = 2
-LEVEL_URL, LOGIN = load_level(LEVEL)
 
-def main():
-    response = requests.get(LEVEL_URL, auth=LOGIN)
+def solve(url: str, login: LevelLogin) -> Optional[str]:
+    response = requests.get(url, auth=login)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -26,7 +25,7 @@ def main():
     files_dir = '/'.join(img_path.split('/')[:-1])
 
     # list subdirectory and find a text file
-    response = requests.get(f"{LEVEL_URL}/{files_dir}", auth=LOGIN)
+    response = requests.get(f"{url}/{files_dir}", auth=login)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -36,7 +35,7 @@ def main():
     users_file = filename_elem.text
 
     # get the file!
-    response = requests.get(f"{LEVEL_URL}/{files_dir}/{users_file}", auth=LOGIN)
+    response = requests.get(f"{url}/{files_dir}/{users_file}", auth=login)
     response.raise_for_status()
     # print(response.text)
 
@@ -46,11 +45,14 @@ def main():
         if split_line[0] == "natas3":
             natas3_password = split_line[-1]
 
+    return natas3_password
+
+if __name__ == "__main__":
+    url, login = load_level(LEVEL)
+    natas3_password = solve(url, login)
+
     if natas3_password:
         print("natas3:", natas3_password)
         store_level_password(LEVEL + 1, natas3_password)
     else:
         exit("failed to get natas3 password")
-
-if __name__ == "__main__":
-    main()
