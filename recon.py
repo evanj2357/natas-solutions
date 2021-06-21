@@ -1,3 +1,4 @@
+import html
 import json
 import requests
 from bs4 import BeautifulSoup
@@ -35,9 +36,11 @@ def main():
     response = requests.get(level_url + path, auth=login)
     response.raise_for_status()
 
-    print(response.text)
+    text = html.unescape(response.text)
 
-    # soup = BeautifulSoup(response.text, "html.parser")
+    soup = BeautifulSoup(text, "html.parser")
+    print(soup.prettify())
+
     # content = soup.find("div", {"id": "content"})
     # print(content)
 
