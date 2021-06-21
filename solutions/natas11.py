@@ -6,11 +6,11 @@ import base64
 import itertools
 import requests
 import urllib.parse
-from natas_utils import *
 from typing import Optional
 
+from natas_utils import *
+
 LEVEL = 11
-URL, LOGIN = load_level(LEVEL)
 
 def detect_key(data: bytes, min_length: int = 1) -> Optional[bytes]:
     """
@@ -25,12 +25,12 @@ def detect_key(data: bytes, min_length: int = 1) -> Optional[bytes]:
 def xor_encrypt(data: bytes, key: bytes) -> bytes:
     return bytes([d ^ k for d, k in zip(data, itertools.cycle(key))])
 
-def main():
+def solve(url: str, login: LevelLogin) -> Optional[str]:
     leaked_defaultdata = b'{"showpassword":"no","bgcolor":"#FFFFFF"}'
     payload_data = b'{"showpassword":"yes","bgcolor":"#FFFFFF"}'
 
     with requests.session() as session:
-        _ = session.get(URL, auth=LOGIN)
+        _ = session.get(url, auth=login)
 
         # get XOR-encrypted cookie
         encrypted_cookie = base64.b64decode(urllib.parse.unquote(session.cookies.get("data")))
@@ -48,16 +48,19 @@ def main():
 
         session.cookies.set("data", payload)
 
-        response = session.get(URL, auth=LOGIN)
+        response = session.get(url, auth=login)
 
     candidate_passwords = extract_candidate_passwords(response.text)
     natas12_password = try_level_login(LEVEL + 1, candidate_passwords)
+
+    return natas12_password
+
+if __name__ == "__main__":
+    url, login = load_level(LEVEL)
+    natas12_password = solve(url, login)
 
     if natas12_password:
         print("natas12:", natas12_password)
         store_level_password(LEVEL + 1, natas12_password)
     else:
         exit("Failed to get password for the next level.")
-
-if __name__ == "__main__":
-    main()
