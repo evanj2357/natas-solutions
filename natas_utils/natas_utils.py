@@ -3,7 +3,10 @@ import re
 from bs4 import BeautifulSoup
 import requests
 
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, List, NewType, Optional, Tuple
+
+LevelLogin = NewType("LevelAuth", Tuple[str, str])
+LevelData = NewType("LevelData", Tuple[str, LevelLogin])
 
 from requests.sessions import Session
 
@@ -17,14 +20,14 @@ level_url_format = NATAS_DATA["level_url_format"]
 def flag_file_abspath(level_number: int) -> str:
     return NATAS_DATA["flag_path"] + f"natas{level_number}"
 
-def load_level(level_number: int) -> Tuple[str, Tuple[str, str]]:
+def load_level(level_number: int) -> LevelData:
     level_url = level_url_format.format(level_number)
     login = (
         NATAS_DATA["logins"][level_number]["username"],
         NATAS_DATA["logins"][level_number]["password"],
     )
 
-    return (level_url, login)
+    return LevelData((level_url, LevelLogin(login)))
 
 def store_level_password(level_number: int, password: str):
     NATAS_DATA["logins"][level_number]["password"] = password
