@@ -1,19 +1,17 @@
-import json
 """
 natas0: just the entry point, flag displays on the page
 """
 
-from natas_utils.natas_utils import load_level
 import requests
 from bs4 import BeautifulSoup
+from typing import Optional, Tuple
 
 from natas_utils import *
 
 LEVEL = 0
-URL, LOGIN = load_level(LEVEL)
 
-def main():
-    response = requests.get(URL, auth=LOGIN)
+def solve(url: str, login: Tuple[str, str]) -> Optional[str]:
+    response = requests.get(url, auth=login)
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -25,7 +23,13 @@ def main():
     natas1_password = content.contents[1].strip().split()[-1]
     print("natas1:", natas1_password)
 
-    store_level_password(LEVEL + 1, natas1_password)
+    return natas1_password
 
 if __name__ == "__main__":
-    main()
+    level_data = load_level(LEVEL)
+
+    natas1_password = solve(*level_data)
+    if not natas1_password:
+        exit(f"Failed to solve natas{LEVEL}.")
+
+    store_level_password(LEVEL + 1, natas1_password)
