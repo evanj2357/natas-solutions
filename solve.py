@@ -45,8 +45,10 @@ def get_level_arg_or_exit() -> Union[int, NoReturn]:
     return level
 
 def main():
-
     level = get_level_arg_or_exit()
+
+    if len(natas_utils.NATAS_DATA["logins"][level]["password"]) == 0:
+        exit("Missing level login. Please solve the previous level first.")
 
     flag = solve(level)
     if flag:
