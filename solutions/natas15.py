@@ -1,4 +1,5 @@
 """
+natas15:
 """
 
 import requests
@@ -9,6 +10,9 @@ from natas_utils import *
 LEVEL = 15
 
 def solve(url: str, login: LevelLogin) -> Optional[str]:
+    response = requests.post(url, auth=login, data={"username": "natas16"})
+    print(response.text)
+
     return None
 
 if __name__ == "__main__":
