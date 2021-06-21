@@ -11,6 +11,7 @@ from natas_utils import *
 
 LEVEL = 13
 
+# see http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
 PNG_FIRST_BYTES = bytes.fromhex("89504e470d0a1a0a")
 
 def solve(url: str, login: LevelLogin) -> Optional[str]:
