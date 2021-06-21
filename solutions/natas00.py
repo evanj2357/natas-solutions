@@ -4,13 +4,13 @@ natas0: just the entry point, flag displays on the page
 
 import requests
 from bs4 import BeautifulSoup
-from typing import Optional, Tuple
+from typing import Optional
 
 from natas_utils import *
 
 LEVEL = 0
 
-def solve(url: str, login: Tuple[str, str]) -> Optional[str]:
+def solve(url: str, login: LevelLogin) -> Optional[str]:
     response = requests.get(url, auth=login)
     response.raise_for_status()
 
@@ -21,15 +21,15 @@ def solve(url: str, login: Tuple[str, str]) -> Optional[str]:
     # line from the source file
     # password is the last "word" in a comment after one line of text
     natas1_password = content.contents[1].strip().split()[-1]
-    print("natas1:", natas1_password)
 
     return natas1_password
 
 if __name__ == "__main__":
-    level_data = load_level(LEVEL)
+    url, login = load_level(LEVEL)
 
-    natas1_password = solve(*level_data)
+    natas1_password = solve(url, login)
     if not natas1_password:
         exit(f"Failed to solve natas{LEVEL}.")
 
+    print("natas1:", natas1_password)
     store_level_password(LEVEL + 1, natas1_password)
