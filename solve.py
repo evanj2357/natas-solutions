@@ -51,6 +51,7 @@ def main():
     flag = solve(level)
     if flag:
         print(f"Success! natas{level} solved.")
+        print(f"natas{level}:{flag}")
     else:
         print(f"Failed to solve natas{level}.")
 
