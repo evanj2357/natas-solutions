@@ -36,7 +36,7 @@ if __name__ == "__main__":
     natas13_password = solve(url, login)
 
     if natas13_password:
-        print("natas12:", natas13_password)
+        print("natas13:", natas13_password)
         store_level_password(LEVEL + 1, natas13_password)
     else:
         exit("Failed to get password for the next level.")

@@ -16,7 +16,7 @@ if __name__ == "__main__":
     flag = solve(url, login)
 
     if flag:
-        print("natas{:02}:".format(LEVEL), flag)
+        print("natas{:02}:".format(LEVEL + 1), flag)
         store_level_password(LEVEL + 1, flag)
     else:
-        exit("Failed to get password for natas{:02}.".format(LEVEL))
+        exit("Failed to get password for natas{:02}.".format(LEVEL + 1))
