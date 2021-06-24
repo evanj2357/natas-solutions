@@ -47,7 +47,7 @@ def binary_search_password(query_func: Callable, url: str, login: LevelLogin, us
                 return password + CHARS[mid]
 
         password += CHARS[low]
-        print(len(password), password)
+        # print(len(password), password)
 
     return password
 
