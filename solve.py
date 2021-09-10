@@ -6,7 +6,7 @@ import importlib
 import os
 import shutil
 import sys
-from typing import NoReturn, Optional, Union
+from typing import List, NoReturn, Optional, Union
 
 # needed for natas_utils to load data
 DATA_FILE = "./levels.json"
@@ -27,15 +27,15 @@ def solve(level: int) -> Optional[str]:
 
     return flag
 
-def get_level_arg_or_exit() -> Union[int, NoReturn]:
-    if len(sys.argv) < 2:
+def get_level_arg_or_exit(args: List[str]) -> Union[int, NoReturn]:
+    if len(args) < 1:
         exit("Missing argument: level number (integer).")
 
-    if len(sys.argv) > 2:
+    if len(args) > 1:
         print("Not supported: batch solve.\nUsing first argument only.")
 
     try:
-        level = int(sys.argv[1])
+        level = int(args[0])
     except:
         exit("Type error: level number must be an integer.")
 
@@ -45,10 +45,20 @@ def get_level_arg_or_exit() -> Union[int, NoReturn]:
     return level
 
 def main():
-    level = get_level_arg_or_exit()
+    solve_up_to = False
+    args = sys.argv[1:]
+    if "--deps" in args:
+        args = list(filter(lambda arg: arg != "--deps", args))
+        solve_up_to = True
+
+    level = get_level_arg_or_exit(args)
 
     if len(natas_utils.NATAS_DATA["logins"][level]["password"]) == 0:
-        exit("Missing level login. Please solve the previous level first.")
+        if solve_up_to:
+            for l in range(level):
+                solve(l)
+        else:
+            exit("Missing level login. Please solve the previous level first.")
 
     flag = solve(level)
     if flag:
