@@ -1,6 +1,14 @@
 # Natas Solutions
 
+_Evan Johnson_
+
 Python 3 solution scripts for [Natas](https://overthewire.org/wargames/natas/) levels.
+
+Python dependencies I used in my solutions are specified in `requirements.txt` and can
+be installed using the command:
+```
+pip install -r requirements.txt
+```
 
 ## SPOILER WARNING
 
@@ -40,7 +48,11 @@ command line. It takes a level number and optional relative path as command line
 ### solve.py
 
 The main script takes a single integer as a command line argument and attempts to run the
-solution script for that level.
+solution script for that level. To re-run solution scripts for levels 1 through `N`, use the
+`--deps` flag:
+```
+python solve.py --deps N
+```
 
 To use this utility with your own solutions, either replace the corresponding script in
 `solutions` with your own or modify `solve.py` to import solutions from elsewhere.
